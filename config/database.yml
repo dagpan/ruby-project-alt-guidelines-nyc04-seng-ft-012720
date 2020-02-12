@@ -1,0 +1,8 @@
+development:
+  adapter: 'sqlite3'
+  database: 'db/apothicary-dev.db'
+
+test:
+  adapter: 'sqlite3'
+  database: 'db/apothicary-test.db'
+  
