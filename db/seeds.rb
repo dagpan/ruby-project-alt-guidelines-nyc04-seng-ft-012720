@@ -5,9 +5,9 @@ require_relative '../config/environment'
 # 50.times do
 #    User.create(first_name: "#{Faker::Name.first_name}", last_name: "#{Faker::Name.last_name}", user_name: "#{Faker::Alphanumeric.alpha(number: 6)}", password: "#{Number.number(digits: 4)}", exp: rand(1..6))
 # end
-User.create(first_name: "John", last_name: "Beet", user_name: "beermo", password: 1234, exp: 0)
-User.create(first_name: "Mary", last_name: "Poppins", user_name: "maryja", password: 1234, exp: 0)
-UUser.create(first_name: "Jake", last_name: "Best", user_name: "bester", password: 1234, exp: 0)
+#User.create(first_name: "John", last_name: "Beet", user_name: "beermo", password: 1234, exp: 0)
+#User.create(first_name: "Mary", last_name: "Poppins", user_name: "maryja", password: 1234, exp: 0)
+User.create(first_name: "Jake", last_name: "Best", user_name: "bester", password: 1234, exp: 0)
 User.create(first_name: "Pit", last_name: "Jones", user_name: "pitbul", password: 1234, exp: 0)
 
 #  -----------    pharmacy create

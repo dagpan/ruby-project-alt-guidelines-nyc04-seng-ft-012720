@@ -6,17 +6,11 @@ prompt = TTY::Prompt.new
 
 
 
-
-
-
-
-
-
 def flashing_app
-   msg = "THIS IS THE APOTHICARY APP BY PANAYOTIS DAGINIS"
+   msg = "THIS IS THE APOTHECARY APP BY PANAYOTIS DAGINIS"
    puts ""
    system "say #{msg}"
-   3.times do
+   2.times do
      print "\r#{ ' ' * msg.size }"
      sleep 1
      print "\r#{ msg.colorize(:color => :light_blue, :background => :red) }"
@@ -40,18 +34,21 @@ def color_fix
    HighLine.color_scheme = ft
 end
 def get_exp(user)
-   if User.find_by(user_name: usrn).services.length.between?(1..4)
-      User.find_by(user_name: usrn).exp = 1
-   elsif User.find_by(user_name: usrn).services.length.between?(4..7)
-         User.find_by(user_name: usrn).exp = 2
-   elsif User.find_by(user_name: usrn).services.length.between?(7..11)
-         User.find_by(user_name: usrn).exp = 3
-   elsif User.find_by(user_name: usrn).services.length.between?(11...14)
-         User.find_by(user_name: usrn).exp = 4
-   elsif User.find_by(user_name: usrn).services.length > 14
-         User.find_by(user_name: usrn).exp = 5
+   e = User.find_by(user_name: user).services.length
+   u = User.find_by(user_name: user)
+   if e.between?(1, 4)
+      u.update(exp: 1)
+   elsif e.between?(4, 7)
+         u.update(exp: 2)
+   elsif e.between?(7, 11)
+         u.update(exp: 3)
+   elsif e.between?(11, 14)
+         u.update(exp: 4)
+   elsif e > 14
+         u.update(exp: 5)
    end
-   User.find_by(user_name: usrn).exp
+   u.exp
+   
 end
 #    warning msg   -------------
 def warning_msg
@@ -118,6 +115,7 @@ def user_menu_header(usrn)
    cli = HighLine.new
 #   puts ""
    cli.say("<%= color('  --  USER MENU  --  ', :menu_choice) %>")
+   puts ""
 #    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
    puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
    puts "  --  Your Experience is : #{expe}".colorize(:color => :light_blue, :background => :white)
@@ -132,7 +130,7 @@ end
 def user_header(usrn)
    ####   GET  USERNAME  #####
    ####   GET  USER EXP  #####
-   expe = get_exp(usrn)
+   expe = get_exp(user)
    screen_name = usrn
    color_fix
    cli = HighLine.new
@@ -149,14 +147,14 @@ def user_header(usrn)
 end
 #    --------      GUEST  menu     HEADER
 def guest_menu_header
-   screen_name = "Guest"
+   screen_name = "GUEST"
    color_fix
    cli = HighLine.new
 #  puts ""
-   cli.say("<%= color('  --  USER MENU  --  ', :menu_choice) %>")
+#   cli.say("<%= color('  --  USER MENU  --  ', :menu_choice) %>")
 #    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
-   puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
-   cli.say("<%= color('-'*40, :menu_line) %>")
+   puts "  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
+   cli.say("<%= color('-'*18, :menu_line) %>")
    puts ""
 #    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
 #    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
@@ -169,9 +167,10 @@ def login_menu_header
    cli = HighLine.new
 #  puts ""
    cli.say("<%= color('  --  LOGIN MENU  --  ', :menu_choice) %>")
+   puts ""
+   cli.say("<%= color('-'*40, :menu_line) %>")
 #    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
    puts "  --  Welcome #{screen_name} ".colorize(:color => :light_blue, :background => :white)
-   cli.say("<%= color('-'*40, :menu_line) %>")
    puts ""
 #    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
 #    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
@@ -185,6 +184,7 @@ def info_menu_header
    cli.say("<%= color('  --  INFO PAGE  --  ', :menu_choice) %>")
 #    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
 #   puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
+   puts ""   
    cli.say("<%= color('-'*21, :menu_line) %>")
    puts ""
 #    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
@@ -198,6 +198,7 @@ def goodbye_header
 #  puts ""
    cli.say("<%= color('  --  GOODBYE  --  ', :menu_choice) %>")
 #    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+puts ""
 #   puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
    cli.say("<%= color('-'*19, :menu_line) %>")
    puts ""
@@ -212,9 +213,116 @@ def register_menu_header
    cli = HighLine.new
 #  puts ""
    cli.say("<%= color('  --  REGISTER MENU  --  ', :menu_choice) %>")
+   puts ""
+   cli.say("<%= color('-'*25, :menu_line) %>")
+   puts ""
 #    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
    puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
+   puts ""
+#    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#    puts ""
+end
+#    --------      ADD  menu     HEADER
+def add_menu_header
+   color_fix
+   cli = HighLine.new
+#  puts ""
+   cli.say("<%= color('  --  ADD MENU  --  ', :menu_choice) %>")
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#   puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
+   puts ""
+   cli.say("<%= color('-'*20, :menu_line) %>")
+   puts ""
+#    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#    puts ""
+end
+#    --------      ADD PHARMACY  menu     HEADER
+def add_pharmacy_header
+   color_fix
+   cli = HighLine.new
+#  puts ""
+   cli.say("<%= color('  --  ADD PHARMACY  --  ', :menu_choice) %>")
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#   puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
+   puts ""
+   cli.say("<%= color('-'*24, :menu_line) %>")
+   puts ""
+#    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#    puts ""
+end
+#    --------      ADD CONTRIBUTION  menu     HEADER
+def add_contribution_header
+   color_fix
+   cli = HighLine.new
+#  puts ""
+   cli.say("<%= color('  --  ADD CONTRIBUTION  --  ', :menu_choice) %>")
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#   puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
+   puts ""
+   cli.say("<%= color('-'*28, :menu_line) %>")
+   puts ""
+#    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#    puts ""
+end
+#    --------      FIND PHARMACY  menu     HEADER
+def find_pharmacy_header
+   color_fix
+   cli = HighLine.new
+#  puts ""
+   cli.say("<%= color('  --  FIND PHARMACY  --  ', :menu_choice) %>")
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#   puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
+   puts ""
    cli.say("<%= color('-'*25, :menu_line) %>")
+   puts ""
+#    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#    puts ""
+end
+#    --------      View COntributions  menu     HEADER
+def view_contributions_header
+   color_fix
+   cli = HighLine.new
+#  puts ""
+   cli.say("<%= color('  --  VIEW CONTRIBUTION  --  ', :menu_choice) %>")
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#   puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
+   puts ""
+   cli.say("<%= color('-'*29, :menu_line) %>")
+   puts ""
+#    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#    puts ""
+end
+#    --------      EDIT COntributions  menu     HEADER
+def edit_contributions_header
+   color_fix
+   cli = HighLine.new
+#  puts ""
+   cli.say("<%= color('  --  EDIT CONTRIBUTION  --  ', :menu_choice) %>")
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#   puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
+   puts ""
+   cli.say("<%= color('-'*29, :menu_line) %>")
+   puts ""
+#    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#    puts ""
+end
+#    --------   delete  COntributions  menu     HEADER
+def delete_contributions_header
+   color_fix
+   cli = HighLine.new
+#  puts ""
+   cli.say("<%= color('  --  DELETE CONTRIBUTION  --  ', :menu_choice) %>")
+#    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
+#   puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
+   puts ""
+   cli.say("<%= color('-'*31, :menu_line) %>")
    puts ""
 #    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
 #    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
@@ -233,6 +341,7 @@ def display_info_about_app
    puts "" 
    puts "  --  #{ info_msg }  --  ".colorize(:color => :light_blue, :background => :white)
    puts ""    
+#   system "say #{info_msg}"
 end
 ##     -----    DISPLAY GOODBYE MESSAGE  ------
 def display_goodbye
@@ -265,484 +374,6 @@ end
 def terminate_app
    exit
 end
-
-
-
-
-
-
-#    --------      menu     
-
-
-
-
-# #    ------     MAIN MENU CHOICES --------
-# def display_main_menu_choice
-#    #The disabled choice will be displayed with a cross ✘ character next to it and followed by an explanation:
-#    prompt = TTY::Prompt.new
-#    menu_choices = [
-#                     'First Time User, Want To Register',
-#                     'Already A Registered User, Want To Login',
-#                  #  { name: 'Goro', disabled: '(injury)' },
-#                     'Do Not Wish To Register, Just Browsing',
-#                     'Looking For Info About The App',
-#                     'Nothing Really, Spare Me Your @?%#&?|%!'
-#                    ]
-#    choice_msg = 'What Will It Be, We Offer A Great Many Choices!'
-#    #   system "say #{choice_msg}"
-#    main_menu_choice = prompt.select('What Will It Be, We Offer A Great Many Choices!'.colorize(:color => :light_blue), menu_choices)
-# end
-# #    ------     USER MENU CHOICES --------
-# def display_user_menu_choice
-#    prompt = TTY::Prompt.new
-#    menu_choices = [
-#                     'Find A Pharmacy Near Me',
-#                     'Check My Contributions',
-#                  #  { name: 'Goro', disabled: '(injury)' },
-#                     'I Wish To Add A Contibution',
-#                     'I Wish To Edit One Of My Contributions',
-#                     'I Wish To Delete One Of My Contributions',
-#                     'Go Back To Main Menu'
-#                    ]
-#    choice_msg = 'What Will It Be, We Offer A Great Many Choices!'
-#    #   system "say #{choice_msg}"
-#    main_menu_choice = prompt.select('What Will It Be, We Offer A Great Many Choices!'.colorize(:color => :light_blue), menu_choices)
-# end
-# #    ------     GUEST MENU CHOICES --------
-# def display_guest_menu_choice
-#    prompt = TTY::Prompt.new
-#    menu_choices = [
-#                     'Find A Pharmacy Near Me',
-#                     { name: 'Check My Contributions', disabled: '(You Are A Guest)' },
-#                     { name: 'I Wish To Add A Contibution', disabled: '(You Are A Guest)' },
-#                     { name: 'I Wish To Edit One Of My Contributions', disabled: '(You Are A Guest)' },
-#                     { name: 'I Wish To Delete One Of My Contributions' disabled: '(You Are A Guest)' },
-#                     'Go Back To Main Menu'
-#                    ]
-#    choice_msg = 'What Will It Be, We Offer A Great Many Choices!'
-#    #   system "say #{choice_msg}"
-#    main_menu_choice = prompt.select('What Will It Be, We Offer A Great Many Choices!'.colorize(:color => :light_blue), menu_choices)
-# end
-# #    ------     REGISTER MENU CHOICES --------
-# def display_register_menu_choice
-#    #The disabled choice will be displayed with a cross ✘ character next to it and followed by an explanation:
-#    prompt = TTY::Prompt.new
-#    #check_username = User.pluck(:password)
-#    result = prompt.collect do
-#          key(:f_name).ask('What Is Your First Name?'.colorize(:color => :light_blue), required: true)
-#          key(:l_name).ask('What Is Your Last Name?'.colorize(:color => :light_blue), required: true)
-#          key(:u_name).ask('What Is Your Prefered LowerCase Character UserName?'.colorize(:color => :light_blue), required: true)         
-#          key(:pass).ask('What Is Your Prefered 4 Number Password?'.colorize(:color => :light_blue), required: true, echo: false, in: (0000...9999))    
-#    end
-#    #if check_username.include?(result[:u_name])
-#    ## warning_msg
-#    #   puts "The UserName You Chose Already Exists"
-#    fi_name = result[:f_name].strip.downcase.capitalize
-#    la_name = result[:l_name].strip.downcase.capitalize
-#    us_name = result[:u_name].strip.downcase
-#    passw = result[:pass].strip
-#    User.create(first_name: fi_name, last_name: la_name, user_name: us_name, password: passw, exp: 0)
-#    display_login_menu_choice
-# end
-# #    ------     LOGIN MENU CHOICES --------
-# def display_login_menu_choice
-#    prompt = TTY::Prompt.new
-#    def ask_for_password(user)
-#       prompt = TTY::Prompt.new
-#       ppaass = prompt.ask('What Is Your Password?'.colorize(:color => :light_blue), required: true, echo: false).strip
-#       if user.password == ppaass.to_i
-#          (user)
-#       #     CALL  THE   USER MENU  (USER_INSTANCE)
-#       else
-#          puts "The Password You Provided, Is Wrong! Please Try Again!"
-#          ask_for_password(user)
-#       end
-#   end
-#   def ask_for_username
-#       prompt = TTY::Prompt.new
-#       n = prompt.ask("What Is Your UserName?".colorize(:color => :light_blue), required: true).strip.downcase
-#       if User.pluck(:user_name).include?(n)
-#          user_instance = User.find_by(user_name: n)
-#          ask_for_password(user_instance)
-#       else
-#          puts "The UserName You Provided, Does Not Exist, Please Try Again!"
-#          ask_for_username
-#       end
-#   end
-#   ask_for_username
-# end
-# #    ------     MAIN MENU CHOICES --------
-
-
-
-# #    ------     MAIN MENU CHECKS --------
-# def check_main_menu_choice(given_choice)
-#    if given_choice == "First Time User, Want To Register"
-#       choice = 1
-#    end
-#    if given_choice == "Already A Registered User, Want To Login"
-#       choice = 2
-#    end
-#    if given_choice == "Do Not Wish To Register, Just Browsing"
-#       choice = 3
-#    end
-#    if given_choice == "Looking For Info About The App"
-#       choice = 4
-#    end
-#    if given_choice == "Nothing Really, Spare Me Your @?%#&?|%!"
-#       choice = 5
-#    end
-#    choice
-# end
-# #    ------     USER MENU CHECKS --------
-# def check_user_menu_choice(given_choice)
-#    if given_choice == "Find A Pharmacy Near Me"
-#       choice = 1
-#    end
-#    if given_choice == "Check My Contributions"
-#       choice = 2
-#    end
-#    if given_choice == "I Wish To Add A Contibution"
-#       choice = 3
-#    end
-#    if given_choice == "I Wish To Edit One Of My Contributions"
-#       choice = 4
-#    end
-#    if given_choice == "I Wish To Delete One Of My Contributions"
-#       choice = 5
-#    end
-#    if given_choice == "Go Back To Main Menu"
-#       choice = 6
-#    end
-#    choice
-# end
-# #    ------     GUEST MENU CHECKS --------
-# def check_guest_menu_choice(given_choice)
-#    if given_choice == "Find A Pharmacy Near Me"
-#       choice = 1
-#    end
-# #   if given_choice == "Check My Contributions"
-# #      choice = 2
-# #   end
-# #   if given_choice == "I Wish To Add A Contibution"
-# #      choice = 3
-# #   end
-# #   if given_choice == "I Wish To Edit One Of My Contributions"
-# #      choice = 4
-# #   end
-# #   if given_choice == "I Wish To Delete One Of My Contributions"
-# #      choice = 5
-# #   end
-#    if given_choice == "Go Back To Main Menu"
-#       choice = 6
-#    end
-#    choice
-# end
-# #    ------     REGISTER MENU CHECKS --------
-# # def check_register_menu_choice(given_choice)
-# #    if given_choice == "First Time User, Want To Register"
-# #       choice = 1
-# #    end
-# #    if given_choice == "Already A Registered User, Want To Login"
-# #       choice = 2
-# #    end
-# #    if given_choice == "Do Not Wish To Register, Just Browsing"
-# #       choice = 3
-# #    end
-# #    if given_choice == "Looking For Info About The App"
-# #       choice = 4
-# #    end
-# #    if given_choice == "Nothing Really, Spare Me Your @?%#&?|%!"
-# #       choice = 5
-# #    end
-# #    choice
-# # end
-# #    ------     LOGIN MENU CHECKS --------
-# # def check_login_menu_choice(given_choice)
-# #    if given_choice == "First Time User, Want To Register"
-# #       choice = 1
-# #    end
-# #    if given_choice == "Already A Registered User, Want To Login"
-# #       choice = 2
-# #    end
-# #    if given_choice == "Do Not Wish To Register, Just Browsing"
-# #       choice = 3
-# #    end
-# #    if given_choice == "Looking For Info About The App"
-# #       choice = 4
-# #    end
-# #    if given_choice == "Nothing Really, Spare Me Your @?%#&?|%!"
-# #       choice = 5
-# #    end
-# #    choice
-# # end
-# #    ------    NOT USED --------
-# # def get_titles
-# #    msg = "APOTHICARY  --  AN AWESOME APP FOR ALL TO ENJOY"
-# #    menu = "APOTHICARY -- MAIN MENU"
-# #    menu1 = "Register New User"
-# #    menu2 = "Registered User Menu"
-# #    menu3 = "Guest User Menu"
-# #    menu4 = "Your Contributions"
-# #    menu5 = "Your Contributions"
-# #    menu6 = "Your Contributions"
-# #    menu7 = "Your Contributions"
-# #    menu8 = "Your Contributions"
-# #    menu9 = "Your Contributions"
-# #    menu10 = "Your Contributions"
-# #    msg_warning = "WARNING  --  WARNING  --  WARNING"
-# # end
-# #    ------     START APP MESSAGE   --------
-
-# #    ------    PROCEDURES                 --------
-# def active_user
-# end
-# #    ------     LOGIN  PROCEDURE   --------
-# def login_procedure
-#     system("clear")
-#     main_title
-#     main_menu
-#     login_menu_header
-#    #  display_user_menu_choice
-#    #  user_choice = check_user_menu_choice()
-#    #  if user_choice == 1
-#    #  #   register_procedure
-#    #  end
-#    #  if user_choice == 2
-#    #   #  login_procedure
-#    #  end
-#    #  if user_choice == 3
-#    #  #   guest_procedure
-#    #  end
-    
-    
-#     display_registered_user_menu
-
-#     id_active_user = active_user(login_procedure)
-
-#     logged_user = true
-# end
-# #    ------     REGISTER  PROCEDURE   --------
-# def register_procedure
-#     system("clear")
-#     main_title
-#     main_menu
-#     register_menu_header
-#    #  display_to_register_user_menu_choice
-#    #  to_register_user_choice = check_to_register_user_menu_choice
-#    #  if to_register_user_choice == 1
-#    #  #   register_procedure
-#    #  end
-#    #  if to_register_user_choice == 2
-#    #  #   login_procedure
-#    #  end
-#    #  if to_register_user_choice == 3
-#    #  #   guest_procedure
-#    #  end
-
-
-#    #  display_main_menu
-# end
-# #    ------     GUEST  PROCEDURE   --------
-# def guest_procedure
-#     system("clear")
-#     main_title
-#     main_menu
-#     guest_menu_header
-#    #  c = display_guest_user_menu
-#    #  guest_user_choice = check_guest_user_menu_choice(c)
-#    #  if guest_user_choice == 1
-#    #  #   register_procedure
-#    #  end
-#    #  if guest_user_choice == 2
-#    #  #   login_procedure
-#    #  end
-#    #  if guest_user_choice == 3
-#    #   #  guest_procedure
-#    #  end
-# end
-
-
-
-###########     MAIN   MENU  HANDLER   ############
-# def display_main_menu(usrn = nil)
-#     system("clear")
-#     main_title
-#     main_menu
-#     if usrn
-#        user_header(usrn)
-#     end
-       
-#     c = display_main_menu_choice
-#     main_choice = check_main_menu_choice(c)
-#     if main_choice == 1
-#        #register_procedure
-#     end
-#     if main_choice == 2
-#       # login_procedure
-#     end
-#     if main_choice == 3
-#       # guest_procedure
-#     end
-#     if main_choice == 4
-#        display_info_about_app
-#        system("sleep 240")
-#        display_main_menu
-#     end
-#     if main_choice == 5
-#         if logged_user
-#            display_user_goodbye
-#         else
-#            display_goodbye
-#         end     
-#         system("sleep 180")   
-#         terminate_app
-#     end
-# end
-# ###########     GUEST   MENU  HANDLER   ############
-# def display_guest_menu
-#     system("clear")
-#     main_title
-#     main_menu
-#     guest_menu_header
-#     c = display_guest_menu_choice
-#     guest_choice = check_guest_menu_choice(c)
-#     if guest_choice == 1
-
-# #####      VIEW   PHARMACIES   #######
-
-
-#     end
-#     if guest_choice == 6
-# ###########    BACK TO MAIN MENU     ############
-#        system("sleep 2")   
-#        display_main_menu("Guest")
-#     end
-# end
-# ###########     USER   MENU  HANDLER   ############
-# def display_user_menu
-#     system("clear")
-#     main_title
-#     main_menu
-#     user_menu_header
-#     c = display_user_menu_choice
-#     user_choice = check_user_menu_choice(c)
-#     if user_choice == 1
-
-#    #####      VIEW   PHARMACIES   ####### 
-
-
-#     end
-#     if user_choice == 2
-
-#    #####      VIEW   CONTRIBUTIONS   #######
-      
-      
-#     end
-#     if user_choice == 3
-
-#    #####     ADD CONTRIBUTION   #######
-            
-            
-#     end
-#     if user_choice == 4
-
-#   #####      EDIT CONTRIBUTION   #######
-                  
-                  
-#     end
-#     if user_choice == 5
-
-#    #####      DELETE  CONTRIBUTION   #######
-                        
-                        
-#     end
-#     if user_choice == 6
-# ###########    BACK TO MAIN MENU     ############
-#        system("sleep 2")   
-#        display_main_menu("user_name")
-#     end
-#     return 
-# ###########    return value for the user instance     ############
-
-# end
-# ###########     MENU  HANDLER   ############
-# def display_main_menu
-#     system("clear")
-#     main_title
-#     main_menu
-#     c = display_main_menu_choice
-#     main_choice = check_main_menu_choice(c)
-#     if main_choice == 1
-#        register_procedure
-#     end
-#     if main_choice == 2
-#        login_procedure
-#     end
-#     if main_choice == 3
-#        guest_procedure
-#     end
-#     if main_choice == 4
-#        display_info_about_app
-#        system("sleep 180")   
-#        display_main_menu
-#     end
-#     if main_choice == 5
-#         if logged_user
-#            display_user_goodbye
-#         else
-#            display_goodbye
-#         end     
-#         system("sleep 180")   
-#         terminate_app
-#     end
-# end
-# ###########     MENU  HANDLER   ############
-# def display_main_menu
-#     system("clear")
-#     main_title
-#     main_menu
-#     c = display_main_menu_choice
-#     main_choice = check_main_menu_choice(c)
-#     if main_choice == 1
-#        register_procedure
-#     end
-#     if main_choice == 2
-#        login_procedure
-#     end
-#     if main_choice == 3
-#        guest_procedure
-#     end
-#     if main_choice == 4
-#        display_info_about_app
-#        system("sleep 180")   
-#        display_main_menu
-#     end
-#     if main_choice == 5
-#         if logged_user
-#            display_user_goodbye
-#         else
-#            display_goodbye
-#         end     
-#         system("sleep 180")   
-#         terminate_app
-#     end
-# end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
