@@ -9,7 +9,21 @@ prompt = TTY::Prompt.new
 #    ------     MAIN MENU CHOICES --------##################
 #    ------     MAIN MENU CHOICES --------#################
 #    ------     MAIN MENU CHOICES --------$###############
-
+def upd_exp(user)
+   e = User.find_by(user_name: user).services.length
+   u = User.find_by(user_name: user)
+   if e.between?(1, 4)
+      u.update(exp: 1)
+   elsif e.between?(4, 7)
+         u.update(exp: 2)
+   elsif e.between?(7, 11)
+         u.update(exp: 3)
+   elsif e.between?(11, 14)
+         u.update(exp: 4)
+   elsif e > 14
+         u.update(exp: 5)
+   end
+end
 def display_main_menu_choice
    prompt = TTY::Prompt.new
    menu_choices = [
@@ -165,7 +179,7 @@ def display_add_pharmacy_menu_choice(user)
       key(:loct).ask('What Is The Location?'.colorize(:color => :light_blue), required: true)
       key(:open).ask('What Time (24h) Does It Open?'.colorize(:color => :light_blue), required: true, in: (1...24))        
       key(:close).ask('What Time (24h) Does It Close?'.colorize(:color => :light_blue), required: true, in: (1...24))        
-      key(:week).ask('How Many Days During The Week Does It Stay Open?'.colorize(:color => :light_blue), required: true, in: (1...7))    
+      key(:week).ask('How Many Days During The Week Does It Stay Open?'.colorize(:color => :light_blue), required: true, in: (1...8))    
     end
 #    if check_username(result[:u_name])
 ## warning_msg
@@ -198,9 +212,9 @@ def display_add_contribution_menu_choice(user)
    s_name = prompt.ask('What Do You Want To Name The Service?'.colorize(:color => :light_blue), required: true)
    u_id = User.find_by(user_name: user).id
    Service.create(name: s_name, user_id: u_id, pharmacy_id: pharma_id)
+   upd_exp(user)
    display_add_menu_choice(user)
 end
-
 ###########     VIEW CONTRIBUTIONS MENU CHOICES --------##################
 # #########     VIEW CONTRIBUTIONS MENU CHOICES --------#################
 ###########     VIEW CONTRIBUTIONS MENU CHOICES --------$###############
@@ -217,15 +231,14 @@ def display_view_contributions_menu_choice(user)
     s_id = prompt.select("These Are The Services You Have Contributed", choices)
     serv = Service.find_by(id: s_id)
     pharm = Pharmacy.find_by(id: serv.pharmacy_id)
-    puts " Service Name : #{serv.name}"
-    puts " Pharmacy Name : #{pharm.name}"
-    puts " Pharmacy Location : #{pharm.location}"
-    puts " Open from : #{pharm.open_from}"
-    puts " Open Till : #{pharm.open_till}"
-    puts " Open #{pharm.work_week} Days A Week"
+    puts " Service Name : #{serv.name}".colorize(:light_blue).underline
+    puts " Pharmacy Name : #{pharm.name}".colorize(:color => :light_blue, :background => :white)
+    puts " Pharmacy Location : #{pharm.location}".colorize(:color => :light_blue, :background => :white)
+    puts " Open from : #{pharm.open_from}".colorize(:color => :light_blue, :background => :white)
+    puts " Open Till : #{pharm.open_till}".colorize(:color => :light_blue, :background => :white)
+    puts " Open #{pharm.work_week} Days A Week".colorize(:color => :light_blue, :background => :white)
     system("sleep 3")
     t = prompt.yes?('Do You Want To View Another One?')
-    # => Do you like Ruby? (Y/n)
     if t
        display_view_contributions_menu_choice(user) 
     else
@@ -247,19 +260,19 @@ def display_edit_contributions_menu_choice(user)
    s_id = prompt.select("These Are The Services You Have Contributed", choices)
    serv = Service.find_by(id: s_id)
    pharm = Pharmacy.find_by(id: serv.pharmacy_id)
-   puts " Service Name : #{serv.name}"
-   puts " Pharmacy Name : #{pharm.name}"
-   puts " Pharmacy Location : #{pharm.location}"
-   puts " Open from : #{pharm.open_from}"
-   puts " Open Till : #{pharm.open_till}"
-   puts " Open #{pharm.work_week} Days A Week"
+   puts " Service Name : #{serv.name}".colorize(:light_blue).underline
+   puts " Pharmacy Name : #{pharm.name}".colorize(:color => :light_blue, :background => :white)
+   puts " Pharmacy Location : #{pharm.location}".colorize(:color => :light_blue, :background => :white)
+   puts " Open from : #{pharm.open_from}".colorize(:color => :light_blue, :background => :white)
+   puts " Open Till : #{pharm.open_till}".colorize(:color => :light_blue, :background => :white)
+   puts " Open #{pharm.work_week} Days A Week".colorize(:color => :light_blue, :background => :white)
    result = prompt.collect do
       key(:s_name).ask('Give Me A New Name For The Service Or Type The Same'.colorize(:color => :light_blue), required: true)
       key(:p_name).ask('Give Me A New Name For The Pharmacy Or Type The Same'.colorize(:color => :light_blue), required: true)
       key(:loct).ask('Give Me A New Location For The Pharmacy Or Type The Same'.colorize(:color => :light_blue), required: true)
       key(:open).ask('Give Me A New Time For The Time It Opens Or Type The Same'.colorize(:color => :light_blue), required: true, in: (1...24))
       key(:close).ask('Give Me A New Time For The Time It Closes Or Type The Same'.colorize(:color => :light_blue), required: true, in: (1...24))            
-      key(:week).ask('Give Me A New Amount Of Days For The Amount Of Days During The Week It Stays Open Or Type The Same'.colorize(:color => :light_blue), required: true, in: (1...7))    
+      key(:week).ask('Give Me A New Amount Of Days For The Amount Of Days During The Week It Stays Open Or Type The Same'.colorize(:color => :light_blue), required: true, in: (1...8))    
     end
    #  serv = Service.find_by(:id s_id)
    #  pharm = Pharmacy.find_by(:id serv.pharmacy_id)
@@ -275,8 +288,8 @@ def display_edit_contributions_menu_choice(user)
     pharm.update(open_from: o)
     pharm.update(open_till: c)
     pharm.update(work_week: w)
+    upd_exp(user)
     t = prompt.yes?('Do You Want To Edit Another One?')
-    # => Do you like Ruby? (Y/n)
     if t
        display_edit_contributions_menu_choice(user) 
     else
@@ -300,24 +313,24 @@ def display_delete_contributions_menu_choice(user)
    s_id = prompt.select("These Are The Services You Have Contributed", choices)
    serv = Service.find_by(id: s_id)
    pharm = Pharmacy.find_by(id: serv.pharmacy_id)
-   puts " Service Name : #{serv.name}"
-   puts " Pharmacy Name : #{pharm.name}"
-   puts " Pharmacy Location : #{pharm.location}"
-   puts " Open from : #{pharm.open_from}"
-   puts " Open Till : #{pharm.open_till}"
-   puts " Open #{pharm.work_week} Days A Week"
+   puts " Service Name : #{serv.name}".colorize(:light_blue).underline
+   puts " Pharmacy Name : #{pharm.name}".colorize(:color => :light_blue, :background => :white)
+   puts " Pharmacy Location : #{pharm.location}".colorize(:color => :light_blue, :background => :white)
+   puts " Open from : #{pharm.open_from}".colorize(:color => :light_blue, :background => :white)
+   puts " Open Till : #{pharm.open_till}".colorize(:color => :light_blue, :background => :white)
+   puts " Open #{pharm.work_week} Days A Week".colorize(:color => :light_blue, :background => :white)
    t = prompt.yes?('Do You Want To Delete This One?')
-   # => Do you like Ruby? (Y/n)
    if t
       serv.destroy
+      upd_exp(user)
       z = prompt.yes?('Do You Want To Delete Another One?')
-    # => Do you like Ruby? (Y/n)
       if z
          display_delete_contributions_menu_choice(user)
       else
          display_user_menu(user)
       end
    else
+      upd_exp(user)
       display_delete_contributions_menu_choice(user)
    end
 end
@@ -335,34 +348,40 @@ def display_find_pharmacy_menu_choice(user)
    p_id = prompt.select("These Are The Locations We Have Pharmacies", choices)
    pharm = Pharmacy.find_by(id: p_id)
    serv = pharm.services.pluck(:name)
-   puts " Pharmacy Name : #{pharm.name}"
-   puts " Pharmacy Location : #{pharm.location}"
-   puts " Open from : #{pharm.open_from}"
-   puts " Open Till : #{pharm.open_till}"
-   puts " Open #{pharm.work_week} Days A Week"
-   puts " Services It Offers "
+   puts " Pharmacy Name : #{pharm.name}".colorize(:light_blue)
+   puts " Pharmacy Location : #{pharm.location}".colorize(:light_blue)
+   puts " Open from : #{pharm.open_from}".colorize(:light_blue)
+   puts " Open Till : #{pharm.open_till}".colorize(:light_blue)
+   puts " Open #{pharm.work_week} Days A Week".colorize(:light_blue)
+   puts " Services It Offers ".colorize(:light_blue).underline
    puts serv
-   # l = prompt.yes?('Do You Need Help Getting There? - This Will Take You On Another App, You Be Back Now!')
-   #  # => Do you like Ruby? (Y/n)
-   #  if l == "y" || l == "Y"
-   #    array1 = ["https://www.google.com/maps/place/81+Prospect+St,+Brooklyn,+NY+11201/", "https://www.google.com/maps/search/NY+Mets+Citi+Field+Stadium", "https://www.google.com/maps/place/Yankee+Stadium", "https://www.google.com/maps/place/MetLife+Stadium", "https://www.google.com/maps/place/Barclays+Center", "https://www.google.com/maps/place/Madison+Square+Garden"]
-   #    system("open", array1[rand(6)])
-   t = prompt.yes?('Do You Want To View Another One?')
-      # => Do you like Ruby? (Y/n)
-#      if t == "y" || t == "Y"    
-      if t 
+   l = prompt.yes?('Do You Need Help Getting There? - This Will Take You On Another App, You Be Back Now!')
+   if l
+      array1 = ['https://www.google.com/maps/place/81+Prospect+St,+Brooklyn,+NY+11201/', 'https://www.google.com/maps/search/NY+Mets+Citi+Field+Stadium', 'https://www.google.com/maps/place/Yankee+Stadium', 'https://www.google.com/maps/place/MetLife+Stadium', 'https://www.google.com/maps/place/Barclays+Center', 'https://www.google.com/maps/place/Madison+Square+Garden']
+      system("open #{array1.sample}")
+      t = prompt.yes?('Do You Want To View Another One?')
+      if t
          display_find_pharmacy_menu_choice(user)
       else
          if user == "GUEST" || user == "Guest"
-              display_guest_menu
+            display_guest_menu
          else
-              display_user_menu(user)
+            display_user_menu(user)
          end
       end
-   #    else
-   #       t = prompt.yes?('Do You Want To View Another One?')
-   #       # => Do you like Ruby? (Y/n)
-   #       if t == "n" || t == "N"
+   else
+      t = prompt.yes?('Do You Want To View Another One?')
+      if t
+         display_find_pharmacy_menu_choice(user)
+      else
+         if user == "GUEST" || user == "Guest"
+            display_guest_menu
+         else
+            display_user_menu(user)
+         end
+      end
+   end
+end
    #          if user == "GUEST"
    #             display_guest_menu
    #          else
@@ -372,7 +391,14 @@ def display_find_pharmacy_menu_choice(user)
    #            display_find_pharmacy_menu_choice(user)
    #       end
    #  end
-end
+#    t = prompt.yes?('Do You Want To View Another One?')
+#       # => Do you like Ruby? (Y/n)
+# #      if t == "y" || t == "Y"    
+#       if t 
+#          display_find_pharmacy_menu_choice(user)
+#       else
+
+#       end
 
 
 ###########     VIEW CONTRIBUTIONS MENU CHOICES --------##################

@@ -48,7 +48,6 @@ def get_exp(user)
          u.update(exp: 5)
    end
    u.exp
-   
 end
 #    warning msg   -------------
 def warning_msg
@@ -117,8 +116,8 @@ def user_menu_header(usrn)
    cli.say("<%= color('  --  USER MENU  --  ', :menu_choice) %>")
    puts ""
 #    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
-   puts "  --  Welcome   #{screen_name} ".colorize(:color => :light_blue, :background => :white)
-   puts "  --  Your Experience is : #{expe}".colorize(:color => :light_blue, :background => :white)
+   puts "  --  Welcome   #{screen_name}     ".colorize(:color => :light_blue, :background => :white)
+   puts "  --  Your Experience is : #{expe} ".colorize(:color => :light_blue, :background => :white)
    cli.say("<%= color('-'*40, :menu_line) %>")
    puts ""
 #    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
@@ -130,15 +129,15 @@ end
 def user_header(usrn)
    ####   GET  USERNAME  #####
    ####   GET  USER EXP  #####
-   expe = get_exp(user)
+   expe = get_exp(usrn)
    screen_name = usrn
    color_fix
    cli = HighLine.new
 #   puts ""
 #   cli.say("<%= color('  --  USER MENU  --  ', :menu_choice) %>")
 #    puts "------#{ '-' * menu1.size }------".colorize(:light_blue)
-   puts "  --  Welcome   #{screen_name}".colorize(:color => :light_blue, :background => :white)
-   puts "  --  Your Experience is : #{expe}".colorize(:color => :light_blue, :background => :white)
+   puts "  --  Welcome   #{screen_name}     ".colorize(:color => :light_blue, :background => :white)
+   puts "  --  Your Experience is : #{expe} ".colorize(:color => :light_blue, :background => :white)
    cli.say("<%= color('-'*40, :menu_line) %>")
    puts ""
 #    puts "-- #{menu1} --".colorize(:color => :light_blue, :background => :red)
@@ -333,6 +332,7 @@ end
 ##     -----    DISPLAY  SCREEN MESSAGES  ------
 ##     -----    DISPLAY  INFO MESSAGE  ------
 def display_info_about_app
+   prompt = TTY::Prompt.new
    system("clear")
    main_title
    main_menu
@@ -341,19 +341,29 @@ def display_info_about_app
    puts "" 
    puts "  --  #{ info_msg }  --  ".colorize(:color => :light_blue, :background => :white)
    puts ""    
+   t = prompt.keypress("Press Any Key To Continue, Or Wait A Few Moments! Read The Thing!", timeout: 10)
+   if t
+      display_main_menu("GUEST")
+   end
 #   system "say #{info_msg}"
 end
 ##     -----    DISPLAY GOODBYE MESSAGE  ------
-def display_goodbye
+def display_goodbye(user)
+   prompt = TTY::Prompt.new
+   if user.downcase != "guest"
+      display_name = User.find_by(user_name: user).full_name
+   else
+      display_name = "GUEST"
+   end
    system("clear")
    main_title
    main_menu
    goodbye_header
-   goodbye_msg = "It Was Very Nice Getting To Know You, Good Luck With All Your Future Endeavors And If We Cross Paths Again, We Will Be Very Pleased To Hear About Your Exploits, Great Adventurer!"
+   goodbye_msg = "It Was Very Nice Getting To Know You, Good Luck With All Your Future Endeavors And If We Cross Paths Again, We Will Be Very Pleased To Hear About Your Exploits, Great #{display_name}!"
    puts ""   
    puts "  --  #{ goodbye_msg }  --  ".colorize(:color => :blue, :background => :white)
    puts ""    
-   system "say #{goodbye_msg}"
+ #  system "say #{goodbye_msg}"
 end
 ##     -----    DISPLAY USER GOODBYE MESSAGE  ------
 def display_user_goodbye
@@ -361,7 +371,6 @@ def display_user_goodbye
     system("clear")
     main_title
     main_menu
-    user_menu_header(user)
     delete_contributions_header
 
    goodbye_msg = "It Was Very Nice Getting To Know You, Good Luck With All Your Future Endeavors And If We Cross Paths Again, We Will Be Very Pleased To Hear About Your Exploits, #{display_name}!"

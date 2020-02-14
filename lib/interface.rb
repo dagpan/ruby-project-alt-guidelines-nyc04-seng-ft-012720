@@ -44,18 +44,18 @@ def display_main_menu(usrn)
    end
    if main_choice == 4
       display_info_about_app
-      system("sleep 5")
+#      system("sleep 5")
       display_main_menu("GUEST")
    end
    if main_choice == 5
       #  if logged_user
       #     display_user_goodbye
       #  else
-          display_goodbye
+      display_goodbye(usrn)
       # end     
-       system("sleep 5")   
-       system("clear")   
-       terminate_app
+      system("sleep 5")   
+      system("clear")   
+      terminate_app
    end
 end
 
@@ -78,7 +78,6 @@ def display_guest_menu
    end
    if guest_choice == 6
 ###########    BACK TO MAIN MENU     ############
-      system("sleep 2")   
       display_main_menu("GUEST")
    end
 end
@@ -178,9 +177,6 @@ def display_view_contributions_menu(user)
    user_menu_header(user)
    view_contributions_header
    display_view_contributions_menu_choice(user)
-
-
-
 end
 
 ###########     EDIT  CONTRIBUTIONS   MENU  HANDLER   ############
@@ -194,11 +190,6 @@ def display_edit_contributions_menu(user)
    user_menu_header(user)
    edit_contributions_header
    display_edit_contributions_menu_choice(user)
-   
-   
-
-
-
 end
 
 
@@ -213,11 +204,6 @@ def display_delete_contributions_menu(user)
    user_menu_header(user)
    delete_contributions_header
    display_delete_contributions_menu_choice(user)
-
-
-
-
-
 end
 
 ###########     FIND  PHARMACY   MENU  HANDLER   ############
@@ -237,8 +223,6 @@ def display_find_pharmacy_menu(user)
       find_pharmacy_header
       display_find_pharmacy_menu_choice("GUEST")
    end
-   
-
 end
 
 
@@ -254,8 +238,6 @@ def display_add_menu(user)
    user_menu_header(user)
    add_menu_header
    display_add_menu_choice(user)
-
-
 end
 
 ###########     ADD  CONTRIBUTIONS   MENU  HANDLER   ############
@@ -269,10 +251,6 @@ def display_add_contributions_menu(user)
    user_menu_header(user)
    add_contributions_header
    display_add_contributions_menu_choice(user)
-
-
-
-
 end
 
 ###########     ADD  PHARMACY   MENU  HANDLER   ############
@@ -286,9 +264,6 @@ def display_add_pharmacy_menu(user)
    user_menu_header(user)
    add_pharmacy_header
    display_add_pharmacy_menu_choice(user)
-
-
-
 end
 ###########     DELETE  CONTRIBUTIONS   MENU  HANDLER   ############
 ###########     DELETE  CONTRIBUTIONS   MENU  HANDLER   ############

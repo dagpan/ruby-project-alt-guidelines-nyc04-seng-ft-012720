@@ -17,7 +17,7 @@ prompt = TTY::Prompt.new
 # menu_choice
 
 ########   GOOD LUCK  #########
-
+system("clear")
 flashing_app
 system("sleep 1")
 display_main_menu("GUEST")
